@@ -9,14 +9,13 @@ import requests
 
 def index(request):
     request.session.clear_expired()
-    print
     if 'access_token' in request.session:
         return redirect('/track/')
     return render(request, 'commitTracker/index.html')
 
 
 def oauth_cb(request):
-    print(environ.get('CLIENT_ID'))
+    print('Client ID', environ.get('CLIENT_ID'))
     if 'code' not in request.GET:
         return redirect('/')
     r = requests.post(
@@ -31,7 +30,7 @@ def oauth_cb(request):
         print('Access-token', params['access_token'])
         request.session.flush()
         request.session.__setitem__('access_token', params['access_token'])
-        request.session.set_expiry(60)
+        request.session.set_expiry(300)
         return redirect("/track/")
     if 'error' in params:
         return HttpResponseServerError(params['error'])
