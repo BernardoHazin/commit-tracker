@@ -1,7 +1,7 @@
 const autoprefixer = require('autoprefixer');
+const path = require('path');
 const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
-const path = require('path');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -42,7 +42,7 @@ baseConfig.module.rules.push(
 
 baseConfig.plugins = [
   new webpack.EvalSourceMapDevToolPlugin({
-    exclude: /node_modules/
+    exclude: /node_modules/,
   }),
   new webpack.NamedModulesPlugin(),
   new webpack.NoEmitOnErrorsPlugin(), // don't reload if there is an error

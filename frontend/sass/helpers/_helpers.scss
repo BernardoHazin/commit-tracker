@@ -1,0 +1,128 @@
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+}
+
+.jc {
+    justify-content: center;
+}
+
+.js {
+    justify-content: flex-start;
+}
+
+.je {
+    justify-content: flex-end;
+}
+
+.jb {
+    justify-content: space-between;
+}
+
+.ja {
+    justify-content: space-around;
+}
+
+.jev {
+    justify-content: space-evenly;
+}
+
+.ac {
+    align-items: center;
+}
+
+.as {
+    align-items: flex-start;
+}
+
+.ae {
+    align-items: flex-end;
+}
+
+.ab {
+    align-items: baseline;
+}
+
+$gap: 4px;
+
+@for $index from 1 to 20 {
+    .fs-#{$index} {
+        font-size: $gap * $index;
+    }
+
+    .ma-#{$index} {
+        margin-top: $gap * $index;
+        margin-bottom: $gap * $index;
+        margin-left: $gap * $index;
+        margin-right: $gap * $index;
+    }
+
+    .mx-#{$index} {
+        margin-left: $gap * $index;
+        margin-right: $gap * $index;
+    }
+
+    .my-#{$index} {
+        margin-top: $gap * $index;
+        margin-bottom: $gap * $index;
+    }
+
+    .mt-#{$index} {
+        margin-top: $gap * $index;
+    }
+
+    .mb-#{$index} {
+        margin-bottom: $gap * $index;
+    }
+
+    .ml-#{$index} {
+        margin-left: $gap * $index;
+    }
+
+    .mr-#{$index} {
+        margin-right: $gap * $index;
+    }
+
+    .pa-#{$index} {
+        padding-top: $gap * $index;
+        padding-bottom: $gap * $index;
+        padding-left: $gap * $index;
+        padding-right: $gap * $index;
+    }
+
+    .px-#{$index} {
+        padding-left: $gap * $index;
+        padding-right: $gap * $index;
+    }
+
+    .py-#{$index} {
+        padding-top: $gap * $index;
+        padding-bottom: $gap * $index;
+    }
+
+    .pt-#{$index} {
+        padding-top: $gap * $index;
+    }
+
+    .pb-#{$index} {
+        padding-bottom: $gap * $index;
+    }
+
+    .pl-#{$index} {
+        padding-left: $gap * $index;
+    }
+
+    .pr-#{$index} {
+        padding-right: $gap * $index;
+    }
+}
