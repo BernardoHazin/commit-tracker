@@ -3,7 +3,10 @@ const path = require('path');
 module.exports = {
   root: true,
   extends: ['vinta/recommended'],
-  rules: {},
+  rules: {
+    'jsx-a11y/label-has-associated-control': 'off',
+    'promise/always-return': 'off'
+  },
   env: {
     es6: true,
     browser: true,
