@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "import_export",
     "common",
     "users",
+    "track"
 ]
 
 MIDDLEWARE = [
