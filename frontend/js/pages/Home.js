@@ -39,7 +39,7 @@ const Home = ({ dispatch }) => {
 
   return (
     <div className="home-container column jc ac">
-      <form className="form" onSubmit={submit}>
+      <form className="form column as" onSubmit={submit}>
         <label className="fs-5" htmlFor="user">
           Insira o nome do usuário
         </label>
@@ -51,7 +51,7 @@ const Home = ({ dispatch }) => {
           onChange={(ev) => setUser(ev.target.value)}
         />
         <label className="fs-5 mt-4" htmlFor="project">
-          Insira o projeto para ver os commits!
+          Insira o projeto para capturar os commits!
         </label>
         <input
           aria-placeholder="Nome do projeto"
@@ -65,7 +65,7 @@ const Home = ({ dispatch }) => {
           disabled={!user || !project}
           type="submit"
         >
-          Buscar
+          Capturar
         </button>
         <p className="error mt-4">{error}</p>
       </form>
