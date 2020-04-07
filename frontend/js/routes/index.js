@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import Commits from '../pages/Commits';
 import Home from '../pages/Home';
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/track">
       <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
+        <Route component={Commits} path="/commits/" />
+        <Route component={Home} path="/" />
       </Switch>
     </Router>
   );

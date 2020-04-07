@@ -5,7 +5,8 @@ module.exports = {
   extends: ['vinta/recommended'],
   rules: {
     'jsx-a11y/label-has-associated-control': 'off',
-    'promise/always-return': 'off'
+    'promise/always-return': 'off',
+    'default-param-last': 'off'
   },
   env: {
     es6: true,
