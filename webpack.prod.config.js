@@ -1,8 +1,8 @@
 const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const BundleTracker = require('webpack-bundle-tracker');
 const path = require('path');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -48,6 +48,7 @@ baseConfig.plugins = [
     // removes React warnings
     'process.env': {
       NODE_ENV: JSON.stringify('production'),
+      BASE_URL: process.env.BASE_URL,
     },
   }),
   new MiniCssExtractPlugin({ filename: '[name]-[hash].css', disable: false, allChunks: true }),
