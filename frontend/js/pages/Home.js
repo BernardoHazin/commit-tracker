@@ -45,7 +45,7 @@ const Home = ({ dispatch }) => {
 
   return (
     <div className="home-container column jc ac">
-      <form className="form column as" onSubmit={submit}>
+      <form className="form column as slideUp" onSubmit={submit}>
         <Profile profile={profile} />
         <label className="fs-5 mt-4" htmlFor="project">
           Insira o projeto para capturar os commits!
