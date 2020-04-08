@@ -67,6 +67,9 @@ def search(request):
             '/' + request.GET['project'] + '/commits'
         r = requests.get(
             path, params={'since': get_last_month()}, headers=headers)
+        
+        if 'message' in r.json():
+            return JsonResponse(r.json(), safe=False)
 
         for el in list(map(serialize_commit_response, r.json())):
             el['project'] = request.GET['project']

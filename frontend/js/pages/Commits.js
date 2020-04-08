@@ -10,7 +10,7 @@ const Commits = ({ commits }) => {
   if (!commits.length) history.push('/');
   return (
     <div className="commits-container column ac">
-      <ul className="list">
+      <ul className="list slideUp">
         {commits.map((el) => (
           <li key={el.sha} className="item">
             <Card commit={el} />
