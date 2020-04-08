@@ -8,5 +8,5 @@ urlpatterns = [
     # path('', views.IndexView.as_view(), name='index'),
     # path('commits/', views.IndexView.as_view(), name='commits'),
     path('search/', views.search, name='search'),
-    re_path(r'^(?:.*)/?$', views.IndexView.as_view()),
+    re_path(r'^(?:.*)/?$', views.index, name='index'),
 ]

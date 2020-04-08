@@ -10,14 +10,20 @@ const Card = ({ commit }) => {
   return (
     <div className="card-container column jb">
       <div className="header jb">
-        <p className="title">{commit.project}</p>
-        <p className="sha">{commit.sha}</p>
+        <p className="title" title="Projeto">
+          {commit.project}
+        </p>
+        <p className="sha" title="ID">
+          {commit.sha}
+        </p>
       </div>
       <div className="content">
-        <p className="message pl-4">{commit.message}</p>
+        <p className="message pl-4" title={commit.message}>
+          {commit.message}
+        </p>
       </div>
       <div className="footer jb">
-        <p className="committer">
+        <p className="committer" title={commit.committer}>
           <b>Autor:</b> {commit.committer}
         </p>
         <p className="date">{format(new Date(commit.date))}</p>

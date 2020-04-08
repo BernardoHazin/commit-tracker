@@ -32,5 +32,13 @@
 
     @media screen and (max-width: 640px) {
         width: 300px;
+
+        > .header > .sha {
+            display: none;
+        }
+
+        > .content {
+            overflow: hidden;
+        }
     }
 }

@@ -1,4 +1,5 @@
 from django.views import generic
+from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import Http404
@@ -33,15 +34,15 @@ def serialize_commit_response(commit):
     }
 
 
-class IndexView(generic.ListView):
-    template_name = 'commitTracker/track.html'
-    context_object_name = 'commit_list'
-
-    def get_queryset(self):
-        return ''
+def index(request):
+    request.session.clear_expired()
+    if 'access_token' not in request.session:
+        return redirect('/')
+    return render(request, 'commitTracker/track.html')
 
 
 def search(request):
+    # pylint: disable=no-member
     if (request.method == 'GET'):
         request.session.clear_expired()
         if 'access_token' not in request.session:
