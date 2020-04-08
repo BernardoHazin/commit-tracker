@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import Profile from '../components/home/Profile';
 import { setCommits } from '../state/actions';
 import client from '../utils/axios';
 
 // eslint-disable-next-line react/prop-types
 const Home = ({ dispatch }) => {
   const history = useHistory();
-  const [user, setUser] = useState('');
   const [project, setProject] = useState('');
   const [error, setError] = useState('');
+  const [profile, setProfile] = useState({});
 
   function submit(ev) {
     ev.preventDefault();
@@ -18,7 +19,6 @@ const Home = ({ dispatch }) => {
     client
       .get('/search/', {
         params: {
-          user,
           project,
         },
       })
@@ -37,34 +37,27 @@ const Home = ({ dispatch }) => {
       });
   }
 
+  useEffect(() => {
+    client.get('/me/').then((res) => {
+      setProfile(res.data);
+    });
+  }, [window.location]);
+
   return (
     <div className="home-container column jc ac">
       <form className="form column as" onSubmit={submit}>
-        <label className="fs-5" htmlFor="user">
-          Insira o nome do usuário
-        </label>
-        <input
-          aria-placeholder="Nome do usuario"
-          className="textfield"
-          id="user"
-          placeholder="Nome do usuario"
-          onChange={(ev) => setUser(ev.target.value)}
-        />
+        <Profile profile={profile} />
         <label className="fs-5 mt-4" htmlFor="project">
           Insira o projeto para capturar os commits!
         </label>
         <input
-          aria-placeholder="Nome do projeto"
+          aria-placeholder={`${profile.login}/`}
           className="textfield"
           id="project"
-          placeholder="Nome do projeto"
+          placeholder={`${profile.login}/`}
           onChange={(ev) => setProject(ev.target.value)}
         />
-        <button
-          className="mt-4 px-4 py-1 btn-primary btn-small"
-          disabled={!user || !project}
-          type="submit"
-        >
+        <button className="mt-4 px-4 py-1 btn-primary btn-small" disabled={!project} type="submit">
           Capturar
         </button>
         <p className="error mt-4">{error}</p>

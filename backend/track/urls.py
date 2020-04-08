@@ -5,8 +5,7 @@ from . import views
 
 app_name = 'track'
 urlpatterns = [
-    # path('', views.IndexView.as_view(), name='index'),
-    # path('commits/', views.IndexView.as_view(), name='commits'),
+    path('me/', views.me, name='me'),
     path('search/', views.search, name='search'),
     re_path(r'^(?:.*)/?$', views.index, name='index'),
 ]

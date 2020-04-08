@@ -1,0 +1,13 @@
+.profile-container {
+    font-family: Helvetica;
+
+    > .image {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+    }
+
+    > .location {
+        font-size: 14px;
+    }
+}

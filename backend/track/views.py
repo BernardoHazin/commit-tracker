@@ -41,6 +41,18 @@ def index(request):
     return render(request, 'commitTracker/track.html')
 
 
+def me(request):
+    request.session.clear_expired()
+    if 'access_token' not in request.session:
+        return redirect('/')
+    return JsonResponse({
+        'name': request.session.__getitem__('name'),
+        'login': request.session.__getitem__('login'),
+        'avatar_url': request.session.__getitem__('avatar_url'),
+        'location': request.session.__getitem__('location'),
+    })
+
+
 def search(request):
     # pylint: disable=no-member
     if (request.method == 'GET'):
@@ -48,11 +60,13 @@ def search(request):
         if 'access_token' not in request.session:
             return HttpResponseForbidden('Não autorizado')
 
+        headers = {'Authorization': 'token ' +
+                   request.session.__getitem__('access_token')}
+        login = request.session.__getitem__('login')
+        path = 'https://api.github.com/repos/' + login + \
+            '/' + request.GET['project'] + '/commits'
         r = requests.get(
-            'https://api.github.com/repos/' +
-            request.GET['user'] + '/' + request.GET['project'] + '/commits',
-            params={'since': get_last_month()}
-        )
+            path, params={'since': get_last_month()}, headers=headers)
 
         for el in list(map(serialize_commit_response, r.json())):
             el['project'] = request.GET['project']

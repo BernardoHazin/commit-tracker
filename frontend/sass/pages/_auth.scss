@@ -4,6 +4,16 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  background-color: #e0dede;
+  font-family: Helvetica;
+
+  > .title {
+    margin-bottom: 40px;
+  }
+
+  > .subtitle {
+    margin-bottom: 60px;
+  }
 
   > .btn {
     position: relative;
@@ -24,5 +34,15 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
+  }
+
+  @media screen and (max-width: 640px) {
+    > .title {
+      font-size: 22px;
+    }
+  
+    > .subtitle {
+      font-size: 18px;
+    }
   }
 }
