@@ -45,8 +45,20 @@ const Home = ({ dispatch }) => {
 
   return (
     <div className="home-container column jc ac">
-      <form className="form column as slideUp" onSubmit={submit}>
+      <form className="form column js as slideUp" onSubmit={submit}>
         <Profile profile={profile} />
+        <p className="title fs-5">Olá {profile.name || 'usuário'}, Bem vindo ao Commit Tracker!</p>
+        <p className="description fs-4">
+          Ao inserir um de seus projetos abaixo o <b>Commit Tracker</b> irá capturar os commits
+          feitos no repositório desde o último mês e os armazenará junto com outros commits de
+          outros usuários.
+          <br />
+          <br />
+          Após a captura você terá acesso a uma lista contendo todos eles!
+          <br />
+          <br />
+          Insira um projeto abaixo para começar!
+        </p>
         <label className="fs-5 mt-4" htmlFor="project">
           Insira o projeto para capturar os commits!
         </label>
