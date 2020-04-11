@@ -1,5 +1,6 @@
 from django.views import generic
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import Http404
@@ -53,27 +54,40 @@ def me(request):
     })
 
 
+def get_commits(access_token, login, project):
+    # pylint: disable=no-member
+    headers = {'Authorization': 'token ' + access_token}
+    path = 'https://api.github.com/repos/' + login + '/' + project + '/commits'
+    r = requests.get(
+        path, params={'since': get_last_month()}, headers=headers)
+
+    if 'message' in r.json():
+        return JsonResponse(r.json(), safe=False)
+
+    for el in list(map(serialize_commit_response, r.json())):
+        el['project'] = project
+        el['user'] = login
+        Commit.objects.update_or_create(sha=el['sha'], defaults=el)
+
+
 def search(request):
     # pylint: disable=no-member
     if (request.method == 'GET'):
         request.session.clear_expired()
         if 'access_token' not in request.session:
             return HttpResponseForbidden('Não autorizado')
-
-        headers = {'Authorization': 'token ' +
-                   request.session.__getitem__('access_token')}
         login = request.session.__getitem__('login')
-        path = 'https://api.github.com/repos/' + login + \
-            '/' + request.GET['project'] + '/commits'
-        r = requests.get(
-            path, params={'since': get_last_month()}, headers=headers)
-        
-        if 'message' in r.json():
-            return JsonResponse(r.json(), safe=False)
+        access_token = request.session.__getitem__('access_token')
 
-        for el in list(map(serialize_commit_response, r.json())):
-            el['project'] = request.GET['project']
-            Commit.objects.update_or_create(sha=el['sha'], defaults=el)
+        if 'project' in request.GET:
+            get_commits(access_token, login, request.GET['project'])
 
-        return JsonResponse(list(Commit.objects.values()), safe=False)
+        commit_list = Commit.objects.filter(user=login).values()
+        total = Commit.objects.filter(user=login).count()
+        paginator = Paginator(commit_list, request.GET['per_page'])
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return JsonResponse(
+            {'data': list(page_obj), 'total': total}, safe=False)
     return Http404()

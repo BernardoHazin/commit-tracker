@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import commits from './commits';
+import commitsReducer from './commitsReducer';
 
 export default combineReducers({
-  commits,
+  commitsReducer,
 });

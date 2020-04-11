@@ -6,7 +6,8 @@ module.exports = {
   rules: {
     'jsx-a11y/label-has-associated-control': 'off',
     'promise/always-return': 'off',
-    'default-param-last': 'off'
+    'default-param-last': 'off',
+    'babel/camelcase': 'off'
   },
   env: {
     es6: true,

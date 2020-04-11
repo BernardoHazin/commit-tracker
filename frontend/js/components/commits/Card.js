@@ -33,7 +33,13 @@ const Card = ({ commit }) => {
 };
 
 Card.propTypes = {
-  commit: PropTypes.object.isRequired,
+  commit: PropTypes.shape({
+    project: PropTypes.string,
+    sha: PropTypes.string,
+    message: PropTypes.string,
+    committer: PropTypes.string,
+    date: PropTypes.string,
+  }),
 };
 
 export default Card;
