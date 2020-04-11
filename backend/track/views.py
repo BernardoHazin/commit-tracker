@@ -141,6 +141,7 @@ def set_webhook(project, owner, access_token):
 
 @csrf_exempt
 def github_webhook(request):
+    print('Hey')
     if 'repository' in request.POST:
         print(request.POST['repository'])
         print(request.POST['repository']['owner']['login'])
