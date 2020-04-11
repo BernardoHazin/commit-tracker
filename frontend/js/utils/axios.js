@@ -20,7 +20,7 @@ const client = axios.create({
   headers: {
     'x-CSRFToken': getCookie('csrftoken'),
   },
-  baseURL: process.env.BASE_URL || 'http://localhost:8000/track',
+  baseURL: process.env.BASE_URL || 'http://localhost:8000',
 });
 
 export default client;
