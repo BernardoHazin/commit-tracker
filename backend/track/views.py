@@ -5,9 +5,14 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import Http404
 from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 import datetime
+from os import environ
 from .models import Commit
+from .models import Hooks
+
 
 import requests
 
@@ -56,18 +61,22 @@ def me(request):
 
 def get_commits(access_token, login, project):
     # pylint: disable=no-member
-    headers = {'Authorization': 'token ' + access_token}
+    headers = {}
+    if access_token is not None:
+        headers = {'Authorization': 'token ' + access_token}
     path = 'https://api.github.com/repos/' + login + '/' + project + '/commits'
     r = requests.get(
         path, params={'since': get_last_month()}, headers=headers)
 
     if 'message' in r.json():
-        return JsonResponse(r.json(), safe=False)
+        return r.json()
 
     for el in list(map(serialize_commit_response, r.json())):
         el['project'] = project
         el['user'] = login
         Commit.objects.update_or_create(sha=el['sha'], defaults=el)
+
+    return False
 
 
 def search(request):
@@ -80,7 +89,14 @@ def search(request):
         access_token = request.session.__getitem__('access_token')
 
         if 'project' in request.GET:
-            get_commits(access_token, login, request.GET['project'])
+            get_commits_return_not_found = False
+            get_commits_return_not_found = get_commits(
+                access_token, login, request.GET['project']
+            )
+            if (get_commits_return_not_found):
+                return JsonResponse(get_commits_return_not_found, safe=False)
+            set_webhook(project=request.GET['project'],
+                        owner=login, access_token=access_token)
 
         commit_list = Commit.objects.filter(user=login).values()
         total = Commit.objects.filter(user=login).count()
@@ -91,3 +107,44 @@ def search(request):
         return JsonResponse(
             {'data': list(page_obj), 'total': total}, safe=False)
     return Http404()
+
+
+def set_webhook(project, owner, access_token):
+    # pylint: disable=no-member
+    print(project, owner, access_token)
+    projectExist = None
+    try:
+        projectExist = Hooks.objects.get(project=project)
+    except ObjectDoesNotExist as error:
+        pass
+
+    if not projectExist:
+        path = 'https://api.github.com/repos/' + owner + '/' + project + '/hooks'
+        headers = {'Authorization': 'token ' + access_token}
+        data = {
+            "name": "web",
+            "active": False,
+            "events": [
+                "push"
+            ],
+            "config": {
+                "url": environ.get('BASE_URL') + '/track/webhook/',
+                "content_type": "json",
+                "insecure_ssl": environ.get('INSECURE_SSL')
+            }
+        }
+        r = requests.post(path, headers=headers, json=data)
+        json = r.json()
+        print('Created', json)
+        Hooks.objects.create(id=json['id'], project=project)
+
+
+@csrf_exempt
+def github_webhook(request):
+    if 'repository' in request.POST:
+        print(request.POST['repository'])
+        print(request.POST['repository']['owner']['login'])
+        project = request.POST['repository']
+        login = request.POST['repository']['owner']['login']
+        get_commits(project=project, login=login, access_token=None)
+    return HttpResponse('Ok')

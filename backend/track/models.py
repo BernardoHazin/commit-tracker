@@ -1,8 +1,10 @@
 from django.db import models
 
 # Create your models here.
+
+
 class Commit(models.Model):
-    sha = models.CharField(max_length=40,default='')
+    sha = models.CharField(max_length=40, default='')
     committer = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
@@ -12,3 +14,8 @@ class Commit(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class Hooks(models.Model):
+    id = models.IntegerField(primary_key=True, null=False)
+    project = models.CharField(max_length=255, unique=True)
