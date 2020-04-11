@@ -1,51 +1,55 @@
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import Profile from '../components/home/Profile';
-import { setCommits } from '../state/actions';
-import client from '../utils/axios';
+import { setCommits, setTotal } from '../state/actions';
+import { search, me } from '../utils';
 
-// eslint-disable-next-line react/prop-types
 const Home = ({ dispatch }) => {
   const history = useHistory();
   const [project, setProject] = useState('');
   const [error, setError] = useState('');
   const [profile, setProfile] = useState({});
 
-  function submit(ev) {
-    ev.preventDefault();
+  const onSubmit = (event) => {
+    event.preventDefault();
+
     setError('');
-    client
-      .get('/search/', {
-        params: {
-          project,
-        },
-      })
-      .then((res) => {
+
+    // eslint-disable-next-line babel/camelcase
+    const params = { project, per_page: 5, page: 1 };
+    search({
+      params,
+      onSuccess: (res) => {
         if (res.data.message === 'Not Found') {
           setError('Projeto não encontrado');
           return;
         }
-        dispatch(setCommits(res.data));
+        dispatch(setCommits(res.data.data));
+        dispatch(setTotal(res.data.total));
         history.push('/commits/');
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         if (err.response.status === 403) {
           window.location.replace('/');
         }
-      });
-  }
+      },
+    });
+  };
 
   useEffect(() => {
-    client.get('/me/').then((res) => {
-      setProfile(res.data);
+    me({
+      onSuccess: (res) => {
+        setProfile(res.data);
+      },
     });
   }, [window.location]);
 
   return (
     <div className="home-container column jc ac">
-      <form className="form column js as slideUp" onSubmit={submit}>
+      <form className="form column js as slideUp" onSubmit={onSubmit}>
         <Profile profile={profile} />
         <p className="title fs-5">Olá {profile.name || 'usuário'}, Bem vindo ao Commit Tracker!</p>
         <p className="description fs-4">
@@ -76,6 +80,10 @@ const Home = ({ dispatch }) => {
       </form>
     </div>
   );
+};
+
+Home.propTypes = {
+  dispatch: PropTypes.func,
 };
 
 export default connect()(Home);
