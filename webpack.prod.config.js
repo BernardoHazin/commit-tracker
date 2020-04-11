@@ -48,7 +48,7 @@ baseConfig.plugins = [
     // removes React warnings
     'process.env': {
       NODE_ENV: JSON.stringify('production'),
-      BASE_URL: process.env.BASE_URL,
+      BASE_URL: process.env.FRONTEND_BASE_URL,
     },
   }),
   new MiniCssExtractPlugin({ filename: '[name]-[hash].css', disable: false, allChunks: true }),

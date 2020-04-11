@@ -123,16 +123,17 @@ def set_webhook(project, owner, access_token):
         headers = {'Authorization': 'token ' + access_token}
         data = {
             "name": "web",
-            "active": False,
+            "active": True,
             "events": [
                 "push"
             ],
             "config": {
-                "url": environ.get('BASE_URL') + '/track/webhook/',
+                "url": environ.get('BACKEND_BASE_URL') + '/track/webhook/',
                 "content_type": "json",
                 "insecure_ssl": environ.get('INSECURE_SSL')
             }
         }
+        print(path)
         r = requests.post(path, headers=headers, json=data)
         json = r.json()
         print('Created', json)
@@ -141,7 +142,7 @@ def set_webhook(project, owner, access_token):
 
 @csrf_exempt
 def github_webhook(request):
-    print('Hey')
+    print(request.POST)
     if 'repository' in request.POST:
         print(request.POST['repository'])
         print(request.POST['repository']['owner']['login'])
