@@ -7,13 +7,21 @@ $pagination-font-weight: 600;
     margin-top: 20px;
     font-family: Helvetica;
     font-size: 13px;
- 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
     >.items>.item {
         color: $primary-color;
         background-color: #ffffff;
         padding: $pagination-btn-padding;
         border: 1px solid #e1e4e8;
         font-weight: $pagination-font-weight;
+
+        &:disabled {
+            opacity: .4;
+        }
 
         &.-selected {
             background-color: $primary-color;
@@ -31,11 +39,22 @@ $pagination-font-weight: 600;
         font-weight: $pagination-font-weight;
     }
 
-    > .options {
+    >.options {
         padding: $pagination-btn-padding;
         color: $primary-color;
         border-radius: $pagination-btn-border-radius;
         background-color: #ffffff;
         font-weight: $pagination-font-weight;
+    }
+
+    @media screen and (max-width: 640px) {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        > *:not(:first-child) {
+          margin-top: 15px;
+        }
     }
 }
