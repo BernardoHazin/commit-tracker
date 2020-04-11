@@ -114,7 +114,7 @@ def search(request):
 
 
 def set_webhook(project, owner, access_token):
-    # pylint: disable=no-member
+    # pylint: disable = no-member
     print(project, owner, access_token)
     projectExist = None
     try:
@@ -141,8 +141,9 @@ def set_webhook(project, owner, access_token):
         print(path)
         r = requests.post(path, headers=headers, json=data)
         json = r.json()
-        print('Created', json)
-        Hooks.objects.create(id=json['id'], project=project)
+        if 'id' in json:
+            Hooks.objects.create(id=json['id'], project=project)
+            print('Created', json)
 
 
 @csrf_exempt
@@ -173,7 +174,7 @@ def github_webhook(request):
         return HttpResponseBadRequest('Unsupported X-GITHUB-EVENT header found: {}'.format(event))
 
     payload = json.loads(request.body.decode('utf-8'))
-    
+
     if 'repository' in payload:
         print(payload['repository'])
         print(payload['repository']['owner']['login'])
