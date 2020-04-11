@@ -7,15 +7,17 @@ from os import environ
 import django.http
 import requests
 
+
 def get_user(token):
-    headers = { 'Authorization': 'token ' + token }
+    headers = {'Authorization': 'token ' + token}
     return requests.get('https://api.github.com/user', headers=headers).json()
+
 
 def index(request):
     request.session.clear_expired()
     if 'access_token' in request.session:
         return redirect('/track/')
-    return render(request, 'commitTracker/index.html')
+    return render(request, 'commitTracker/index.html', context={'client_id': environ.get('CLIENT_ID')})
 
 
 def oauth_cb(request):
