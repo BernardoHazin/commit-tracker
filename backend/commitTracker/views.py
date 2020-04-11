@@ -35,7 +35,6 @@ def oauth_cb(request):
     if 'access_token' in params:
         print('Access-token', params['access_token'])
         user = get_user(params['access_token'])
-        print(user)
         request.session.flush()
         request.session.__setitem__('access_token', params['access_token'])
         request.session.__setitem__('login', user['login'])

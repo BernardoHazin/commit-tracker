@@ -12,22 +12,32 @@ $pagination-font-weight: 600;
     align-items: center;
     justify-content: space-between;
 
-    >.items>.item {
+    > .items {
+        margin: 0;
+    }
+
+    >.items> * {
+        display: inline-block;
         color: $primary-color;
         background-color: #ffffff;
         padding: $pagination-btn-padding;
         border: 1px solid #e1e4e8;
         font-weight: $pagination-font-weight;
-
-        &:disabled {
-            opacity: .4;
-        }
+        cursor: pointer;
 
         &.-selected {
             background-color: $primary-color;
             border-color: $primary-color;
-            color: #ffffff;
         }
+
+        &.-selected > a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+    }
+
+    .items>.break {
+        opacity: .4;
     }
 
     >.total {
@@ -53,8 +63,8 @@ $pagination-font-weight: 600;
         justify-content: space-between;
         width: 100%;
 
-        > *:not(:first-child) {
-          margin-top: 15px;
+        >*:not(:first-child) {
+            margin-top: 15px;
         }
     }
 }
