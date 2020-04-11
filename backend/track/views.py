@@ -3,15 +3,19 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseBadRequest
 from django.http import Http404
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
-import datetime
 from os import environ
 from .models import Commit
 from .models import Hooks
+import json
+import datetime
+import hmac
+import hashlib
 
 
 import requests
@@ -130,6 +134,7 @@ def set_webhook(project, owner, access_token):
             "config": {
                 "url": environ.get('BACKEND_BASE_URL') + '/track/webhook/',
                 "content_type": "json",
+                "secret": environ.get('WEBHOOK_SECRET'),
                 "insecure_ssl": environ.get('INSECURE_SSL')
             }
         }
@@ -142,11 +147,37 @@ def set_webhook(project, owner, access_token):
 
 @csrf_exempt
 def github_webhook(request):
-    print(request.POST)
-    if 'repository' in request.POST:
-        print(request.POST['repository'])
-        print(request.POST['repository']['owner']['login'])
-        project = request.POST['repository']
-        login = request.POST['repository']['owner']['login']
+    if 'HTTP_X_HUB_SIGNATURE' not in request.META:
+        return HttpResponseBadRequest('Request does not contain X-GITHUB-SIGNATURE header')
+    if 'HTTP_X_GITHUB_EVENT' not in request.META:
+        return HttpResponseBadRequest('Request does not contain X-GITHUB-EVENT header')
+
+    digest_name, signature = request.META['HTTP_X_HUB_SIGNATURE'].split('=')
+    if digest_name != 'sha1':
+        return HttpResponseBadRequest('Unsupported X-HUB-SIGNATURE digest mode found: {}'.format(digest_name))
+
+    secret = environ.get('WEBHOOK_SECRET')
+
+    mac = hmac.new(
+        secret.encode('utf-8'),
+        msg=request.body,
+        digestmod=hashlib.sha1
+    )
+
+    if not hmac.compare_digest(mac.hexdigest(), signature):
+        return HttpResponseBadRequest('Invalid X-HUB-SIGNATURE header found')
+
+    event = request.META['HTTP_X_GITHUB_EVENT']
+
+    if event not in ['push']:
+        return HttpResponseBadRequest('Unsupported X-GITHUB-EVENT header found: {}'.format(event))
+
+    payload = json.loads(request.body.decode('utf-8'))
+    
+    if 'repository' in payload:
+        print(payload['repository'])
+        print(payload['repository']['owner']['login'])
+        project = payload['repository']
+        login = payload['repository']['owner']['login']
         get_commits(project=project, login=login, access_token=None)
     return HttpResponse('Ok')
