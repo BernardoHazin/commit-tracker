@@ -83,6 +83,25 @@ def get_commits(access_token, login, project):
     return False
 
 
+def search_filtered_commits(request, project):
+    # pylint: disable=no-member
+    if (request.method == 'GET'):
+        request.session.clear_expired()
+        if 'access_token' not in request.session:
+            return HttpResponseForbidden('Não autorizado')
+        login = request.session.__getitem__('login')
+        commit_list = Commit.objects.filter(
+            user=login, project=project).values()
+        total = Commit.objects.filter(user=login, project=project).count()
+        paginator = Paginator(commit_list, request.GET['per_page'])
+        page_number = request.GET['page']
+        page_obj = paginator.get_page(page_number)
+
+        return JsonResponse(
+            {'data': list(page_obj), 'total': total}, safe=False)
+    return Http404()
+
+
 def search(request):
     # pylint: disable=no-member
     if (request.method == 'GET'):
@@ -105,7 +124,7 @@ def search(request):
         commit_list = Commit.objects.filter(user=login).values()
         total = Commit.objects.filter(user=login).count()
         paginator = Paginator(commit_list, request.GET['per_page'])
-        page_number = request.GET.get('page')
+        page_number = request.GET['page']
         page_obj = paginator.get_page(page_number)
 
         return JsonResponse(

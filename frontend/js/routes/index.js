@@ -9,9 +9,15 @@ export default function App() {
   return (
     <Router basename="/track">
       <Switch>
-        <Route component={FilteredCommits} path="/commits/:project" />
-        <Route component={Commits} path="/commits/" />
-        <Route component={Home} path="/" />
+        <Route path="/commits/:project/">
+          <FilteredCommits />
+        </Route>
+        <Route path="/commits/">
+          <Commits />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
       </Switch>
     </Router>
   );

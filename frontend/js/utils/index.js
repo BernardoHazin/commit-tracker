@@ -14,4 +14,13 @@ const me = ({ onSuccess }) => {
   client.get(Urls['track:me']()).then(onSuccess);
 };
 
-export { search, me };
+const filteredSearch = ({ project, params, onError, onSuccess }) => {
+  client
+    .get(Urls['track:filtered_search'](project), {
+      params,
+    })
+    .then(onSuccess)
+    .catch(onError);
+};
+
+export { search, filteredSearch, me };
