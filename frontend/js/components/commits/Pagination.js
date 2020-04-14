@@ -35,6 +35,7 @@ const Pagination = ({ fetch, total }) => {
         activeClassName="-selected"
         breakClassName="break"
         containerClassName="items"
+        marginPagesDisplayed={1}
         nextLabel="próximo"
         pageClassName="item"
         pageCount={pages}

@@ -6,11 +6,33 @@
     width: 620px;
     font-family: Helvetica;
     padding: 20px;
-    cursor: pointer;
-    transition: transform 300ms ease;
+
+    &.animated {
+        cursor: pointer;
+        transition: transform 200ms ease, border 100ms;
+    }
+
+
+    &:focus {
+        outline: none;
+
+        &.animated {
+            border: 2px solid $primary-color;
+            transform: translateX(10px);
+        }
+
+        >.icon,
+        >.informative {
+            opacity: 1;
+            transform: translateY(0px);
+            transform: translateX(0px);
+        }
+    }
 
     &:hover {
-        transform: translateX(10px);
+        &.animated {
+            transform: translateX(10px);
+        }
     }
 
     >.icon {
@@ -25,6 +47,21 @@
     &:hover>.icon {
         opacity: 1;
         transform: translateX(0px);
+    }
+
+    >.informative {
+        transition: 300ms ease;
+        position: absolute;
+        top: -20px;
+        left: 180px;
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    &:hover>.informative {
+        opacity: 1;
+        transform: translateY(0px);
     }
 
     >.header,

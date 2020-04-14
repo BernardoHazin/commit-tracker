@@ -83,6 +83,25 @@ def get_commits(access_token, login, project):
     return False
 
 
+def search_filtered_commits(request, project):
+    # pylint: disable=no-member
+    if (request.method == 'GET'):
+        request.session.clear_expired()
+        if 'access_token' not in request.session:
+            return HttpResponseForbidden('Não autorizado')
+        login = request.session.__getitem__('login')
+        commit_list = Commit.objects.filter(
+            user=login, project=project).values()
+        total = Commit.objects.filter(user=login, project=project).count()
+        paginator = Paginator(commit_list, request.GET['per_page'])
+        page_number = request.GET['page']
+        page_obj = paginator.get_page(page_number)
+
+        return JsonResponse(
+            {'data': list(page_obj), 'total': total}, safe=False)
+    return Http404()
+
+
 def search(request):
     # pylint: disable=no-member
     if (request.method == 'GET'):
@@ -105,7 +124,7 @@ def search(request):
         commit_list = Commit.objects.filter(user=login).values()
         total = Commit.objects.filter(user=login).count()
         paginator = Paginator(commit_list, request.GET['per_page'])
-        page_number = request.GET.get('page')
+        page_number = request.GET['page']
         page_obj = paginator.get_page(page_number)
 
         return JsonResponse(
@@ -148,6 +167,7 @@ def set_webhook(project, owner, access_token):
 
 @csrf_exempt
 def github_webhook(request):
+    # pylint: disable = no-member
     if 'HTTP_X_HUB_SIGNATURE' not in request.META:
         return HttpResponseBadRequest('Request does not contain X-GITHUB-SIGNATURE header')
     if 'HTTP_X_GITHUB_EVENT' not in request.META:
@@ -175,10 +195,17 @@ def github_webhook(request):
 
     payload = json.loads(request.body.decode('utf-8'))
 
-    if 'repository' in payload:
-        print(payload['repository'])
-        print(payload['repository']['owner']['login'])
-        project = payload['repository']
-        login = payload['repository']['owner']['login']
-        get_commits(project=project, login=login, access_token=None)
+    if 'commits' in payload:
+        for el in payload['commits']:
+            data = {
+                'sha': el['id'],
+                'committer': el['author']['name'],
+                'message': el['message'],
+                'url': el['url'],
+                'user': payload['repository']['owner']['login'],
+                'project': payload['repository']['name'],
+                'date': el['timestamp']
+            }
+            Commit.objects.update_or_create(sha=data['sha'], defaults=data)
+    print('Commits added!')
     return HttpResponse('Ok')
