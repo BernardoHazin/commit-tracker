@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-// import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Card from '../components/commits/Card';
 import Pagination from '../components/commits/Pagination';
@@ -10,6 +10,11 @@ import { setCommits, setTotal } from '../state/actions';
 import { search } from '../utils';
 
 const Commits = ({ commits, total, dispatch }) => {
+  const history = useHistory();
+  const onCardClick = (commit) => {
+    history.push(`/commits/${commit.project}`);
+  };
+
   const fetch = (page, per_page) => {
     const params = { per_page, page };
     search({
@@ -35,7 +40,7 @@ const Commits = ({ commits, total, dispatch }) => {
       <ul className="list slideUp">
         {commits.map((el) => (
           <li key={el.sha} className="item">
-            <Card commit={el} />
+            <Card commit={el} onCardClick={onCardClick} />
           </li>
         ))}
       </ul>

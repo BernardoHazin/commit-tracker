@@ -30,7 +30,6 @@ const Pagination = ({ fetch, total }) => {
 
   return (
     <div className="pagination-container">
-      {/* <div className="items">{buttons}</div> */}
       <ReactPaginate
         activeClassName="-selected"
         breakClassName="break"
@@ -39,10 +38,13 @@ const Pagination = ({ fetch, total }) => {
         nextLabel="próximo"
         pageClassName="item"
         pageCount={pages}
+        pageLinkClassName="link"
         previousLabel="anterior"
         onPageChange={onPageChange}
       />
-      <p className="total">Total: {total}</p>
+      <p className="total" title="Total">
+        Total: {total}
+      </p>
       <select
         className="options"
         id="options"
