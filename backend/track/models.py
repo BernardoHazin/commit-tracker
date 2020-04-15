@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Commit(models.Model):
-    sha = models.CharField(max_length=40, default='')
+    sha = models.CharField(max_length=40, default='', unique=True)
     committer = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
     url = models.CharField(max_length=255)

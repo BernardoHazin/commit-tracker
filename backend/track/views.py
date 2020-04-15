@@ -134,7 +134,6 @@ def search(request):
 
 def set_webhook(project, owner, access_token):
     # pylint: disable = no-member
-    print(project, owner, access_token)
     projectExist = None
     try:
         projectExist = Hooks.objects.get(project=project)
