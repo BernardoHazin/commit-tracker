@@ -58,7 +58,7 @@ const FilteredCommits = () => {
         <ul className="list slideUp">
           {commits.map((el) => (
             <li key={el.sha} className="item">
-              <Card commit={el} onCardClick={onCardClick} />
+              <Card commit={el} isStatic onCardClick={onCardClick} />
             </li>
           ))}
         </ul>
