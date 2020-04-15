@@ -15,6 +15,10 @@ const FilteredCommits = () => {
   const { project } = useParams();
   const history = useHistory();
 
+  const onCardClick = (commit) => {
+    history.push(`/commits/${commit.project}`);
+  };
+
   const fetch = (page, per_page) => {
     const params = { per_page, page };
     filteredSearch({
@@ -54,7 +58,7 @@ const FilteredCommits = () => {
         <ul className="list slideUp">
           {commits.map((el) => (
             <li key={el.sha} className="item">
-              <Card commit={el} isStatic />
+              <Card commit={el} onCardClick={onCardClick} />
             </li>
           ))}
         </ul>

@@ -4,9 +4,13 @@ import React from 'react';
 const Profile = ({ profile }) => {
   return (
     <div className="profile-container col ac">
-      <img alt="Profile" className="image" src={profile.avatar_url} />
-      <p className="mt-2">{profile.name}</p>
-      <p className="location">{profile.location}</p>
+      <img alt="Perfil" className="image" src={profile.avatar_url} title="Avatar" />
+      <p className="name mt-2" title="Nome">
+        {profile.name}
+      </p>
+      <p className="location" title="Localização">
+        {profile.location}
+      </p>
     </div>
   );
 };

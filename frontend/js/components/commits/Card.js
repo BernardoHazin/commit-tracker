@@ -1,26 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
-const Card = ({ commit, isStatic }) => {
+const Card = ({ commit, isStatic, onCardClick }) => {
   const { format } = new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'full',
     timeStyle: 'medium',
   });
-
-  const history = useHistory();
-
-  const onCardClick = () => {
-    history.push(`/commits/${commit.project}`);
-  };
 
   return (
     <div
       className={`card-container column jb ${!isStatic ? 'animated' : ''}`}
       role="button"
       tabIndex={0}
-      onClick={onCardClick}
-      onKeyPress={onCardClick}
+      onClick={() => !isStatic && onCardClick(commit)}
+      onKeyPress={() => !isStatic && onCardClick(commit)}
     >
       <div className="header jb">
         <p className="title" title="Projeto">
@@ -39,7 +32,9 @@ const Card = ({ commit, isStatic }) => {
         <p className="committer" title={commit.committer}>
           <b>Autor:</b> {commit.committer}
         </p>
-        <p className="date">{format(new Date(commit.date))}</p>
+        <p className="date" title="Data de criação">
+          {format(new Date(commit.date))}
+        </p>
       </div>
       {!isStatic ? (
         <>
@@ -71,6 +66,7 @@ Card.propTypes = {
     date: PropTypes.string,
   }),
   isStatic: PropTypes.bool,
+  onCardClick: PropTypes.func.isRequired,
 };
 
 export default Card;
